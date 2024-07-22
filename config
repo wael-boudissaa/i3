@@ -19,6 +19,7 @@ bindsym $mod+q exec rofi -show combi
 exec_always feh --bg-scale ~/Desktop/Images/6165345.jpg
 # Thanks Childz
 exec_always --no-startup-id xinput set-prop 12 "libinput Natural Scrolling Enabled" 1
+# log-path = "/home/wael-boudissa/.config/picom/picom.log";
 
 exec_always --no-startup-id xinput set-prop 14 "libinput Natural Scrolling Enabled" 1
 for_window [class="^.*"] border pixel 2
@@ -26,7 +27,8 @@ for_window [class="^.*"] border pixel 2
 for_window [class="^.*"] client.focused          #77dd77 #285577 #ffffff #2e9ef4   #285577
 
 
-exec_always --no-startup-id picom -b
+# exec --no-startup-id picom --log-level=debug --log-file=/tmp/picom.log -b
+exec_always --no-startup-id picom --experimental-backends 
 
 # Toggle night light
 
@@ -256,6 +258,7 @@ bindsym $mod+comma exec --no-startup-id ~/.config/i3/scripts/alsa up Headphone
 bindsym $mod+m move workspace to output left
 
 # Suspend
-bindsym $mod+Shift+period exec --no-startup-id systemctl suspend
+bindsym $mod+Shift+period exec --no-startup-id  i3-msg exit
 bindsym $mod+Shift+F4 exec --no-startup-id systemctl poweroff
+bindsym $mod+Shift+/ exec --no-startup-id systemctl reboot
 
