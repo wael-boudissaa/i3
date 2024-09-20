@@ -9,7 +9,7 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 exec_always --no-startup-id xset r rate 300 35
-exec_always ./battery-check.sh
+exec_always --no-startup-id ./battery-check.sh
 # Screenshots
 #
 # [battery]
@@ -36,7 +36,7 @@ font pango:monospace 10
 
 exec_always --no-startup-id ~/.config/polybar/launch.sh
 bindsym $mod+q exec rofi -show combi
-exec_always feh --bg-scale ~/Desktop/Images/wael2.jpeg
+exec_always feh --bg-scale ~/Desktop/Images/2567.jpg
 # exec_always feh --bg-scale ~/Desktop/Images/
 # Thanks Childz
 exec_always --no-startup-id xinput set-prop 12 "libinput Natural Scrolling Enabled" 1

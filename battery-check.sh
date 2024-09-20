@@ -1,25 +1,26 @@
 #!/bin/bash
 
-# Check if acpi is installed
-if ! command -v acpi &> /dev/null; then
-    echo "acpi command not found. Please install it using 'sudo apt install acpi'."
-    exit 1
-fi
+# Check battery percentage and charging status in an infinite loop
+while true; do
+    # Get battery information (percentage and charging status)
+    battery_info=$(acpi -b)
 
-# Get battery level
-battery_level=$(acpi -b | grep -P -o '[0-9]+(?=%)')
+    # Extract battery percentage
+    battery_level=$(echo "$battery_info" | grep -P -o '[0-9]+(?=%)')
 
-# Check if battery_level is a number
-if ! [[ "$battery_level" =~ ^[0-9]+$ ]]; then
-    echo "Unable to retrieve battery level."
-    exit 1
-fi
+    # Extract charging status (e.g., "Charging", "Discharging")
+    charging_status=$(echo "$battery_info" | grep -oP 'Charging|Discharging')
 
-# Check if battery level is less than or equal to 20%
-if [ "$battery_level" -le 20 ]; then
-    # Send notification
-    notify-send -u critical "Battery Low" "Battery level is ${battery_level}%!"
-fi
+    # Check if battery is below 20% and not charging
+    if [ "$battery_level" -lt 20 ] && [ "$charging_status" == "Discharging" ]; then
+        # Notify the user before logging out
+        notify-send "Battery Low" "Battery level is below 20% and not charging. Logging out..." -u critical
+        sleep 5  # Wait for 5 seconds before logging out
 
-# Output the battery level for i3blocks
-echo "Battery: ${battery_level}%"
+        # Log out command (for GNOME use gnome-session-quit, for i3 use pkill)
+        pkill -KILL -u $USER  # Force log out
+        break
+    fi
+
+    sleep 120  # Check battery level every 120 seconds (2 minutes)
+done
