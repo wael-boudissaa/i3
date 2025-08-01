@@ -1,24 +1,86 @@
-
 # It will not be overwritten, so edit it as you like.
 #
 # Should you change your keyboard layout some time, delete
 # this file and re-run i3-config-wizard(1).
 #
-
 # i3 config file (v4)
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+# ============================================================================
+# COLOR SCHEME - GitHub Theme
+# ============================================================================
+# You can easily change colors here!
+
+# Main theme colors (GitHub Dark)
+set $bg-color            #0d1117
+set $inactive-bg-color   #21262d
+set $text-color          #e6edf3
+set $inactive-text-color #7d8590
+set $urgent-bg-color     #da3633
+set $indicator-color     #238636
+
+# Window border colors (GitHub accent colors)
+set $focused-border      #f78166
+set $unfocused-border    #30363d
+
+# Bar colors (GitHub theme)
+set $bar-bg              #161b22
+set $bar-text            #e6edf3
+set $bar-separator       #30363d
+set $bar-focused-ws      #f78166
+set $bar-inactive-ws     #21262d
+set $bar-urgent-ws       #da3633
+
+# ============================================================================
+# GAPS CONFIGURATION
+# ============================================================================
+gaps inner 10
+gaps outer 10
+
+# ============================================================================
+# STARTUP COMMANDS
+# ============================================================================
 exec_always --no-startup-id xset r rate 300 35
 exec --no-startup-id ~/.config/i3/battery-check.sh
+
+# Fix mouse scrolling (FIXED: changed from 1 to 0)
+exec_always --no-startup-id xinput set-prop 12 "libinput Natural Scrolling Enabled" 0
+exec_always --no-startup-id xinput set-prop 14 "libinput Natural Scrolling Enabled" 0
+
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec_always feh --bg-scale ~/Desktop/Images/dune_awakening_2023_video_game-wallpaper-1920x1200.jpg
+
+# Kill any existing picom and start with our config - IMPORTANT FOR ROUNDED WINDOWS!
+exec_always --no-startup-id picom --experimental-backends 
+
+exec --no-startup-id nm-applet
+
+set $mod Mod1
+
+# ============================================================================
+# APPEARANCE
+# ============================================================================
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+font pango:JetBrains Mono 10
+
+# Set border style and width
+for_window [class="^.*"] border pixel 2
+
+# Window colors using the defined color variables
+#                       border              background         text                 indicator
+client.focused          $focused-border     $focused-border    $text-color          $indicator-color
+client.unfocused        $unfocused-border   $inactive-bg-color $inactive-text-color $indicator-color
+client.focused_inactive $unfocused-border   $inactive-bg-color $inactive-text-color $indicator-color
+client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          $indicator-color
+
+# ============================================================================
+# KEYBINDINGS
+# ============================================================================
+bindsym $mod+q exec rofi -show combi
+
 # Screenshots
-#
-# [battery]
-# command=~/.config/i3/battery-check.sh
-# interval=30
-#
-# Screenshots
-# bindsym bracketright exec --no-startup-id maim "/home/$USER/Pictures/$(date +%Y-%m-%d_%H-%M-%S).png"
-# bindsym $mod+bracketright exec --no-startup-id maim --window $(xdotool getactivewindow) "/home/$USER/Pictures/$(date +%Y-%m-%d_%H-%M-%S).png"
 bindsym $mod+bracketright exec --no-startup-id maim --select "/home/$USER/Pictures/$(date +%Y-%m-%d_%H-%M-%S).png"
 
 ## Clipboard Screenshots
@@ -26,64 +88,17 @@ bindsym Ctrl+bracketright exec --no-startup-id maim | xclip -selection clipboard
 bindsym Ctrl+$mod+bracketright exec --no-startup-id maim --window $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
 bindsym Ctrl+Shift+bracketright exec --no-startup-id maim --select | xclip -selection clipboard -t image/png
 
-
-
-set $mod Mod1
-
-# Font for window titles. Will also be used by the bar unless a different font
-# is used in the bar {} block below.
-font pango:monospace 10
-
-exec_always --no-startup-id ~/.config/polybar/launch.sh
-bindsym $mod+q exec rofi -show combi
-exec_always feh --bg-scale ~/Desktop/Images/617635.jpg
-# exec_always feh --bg-scale ~/Desktop/Images/
-# Thanks Childz
-exec_always --no-startup-id xinput set-prop 12 "libinput Natural Scrolling Enabled" 1
-# log-path = "/home/wael-boudissa/.config/picom/picom.log";
-
-exec_always --no-startup-id xinput set-prop 14 "libinput Natural Scrolling Enabled" 1
-for_window [class="^.*"] border pixel 2
-                          # class                 border  backgr. text    indicator child_border
-for_window [class="^.*"] client.focused          #77dd77 #285577 #ffffff #2e9ef4   #285577
-
-
-# exec --no-startup-id picom --log-level=debug --log-file=/tmp/picom.log -b
-exec_always --no-startup-id picom --experimental-backends 
-
-# Toggle night light
-
-bindsym $mod+Shift+n exec --no-startup-id nightlight 13:00 7:00 30 >/dev/null 2>&1 &
-
-
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
-
-# Before i3 v4.8, we used to recommend this one as the default:
-# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
-# The font above is very space-efficient, that is, it looks good, sharp and
-# clear in small sizes. However, its unicode glyph coverage is limited, the old
-# X core fonts rendering does not support right-to-left and this being a bitmap
-# font, it doesn’t scale on retina/hidpi displays.
-
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-# bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Return exec i3-sensible-terminal
-# kill focused windo
-# bindsym $mod+space exec "/home/theprimeagen/dotfiles/awesome-streamerrc/ThePrimeagen/tmux2"
 
+# kill focused window
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
-
-# There also is the (new) i3-dmenu-desktop which only displays applications
-# shipping a .desktop file. It is a wrapper around dmenu, so you need that
-# installed.
-# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # change focus
 bindsym $mod+h focus left
@@ -129,10 +144,13 @@ bindsym $mod+Shift+space floating toggle
 # focus the parent container
 bindsym $mod+a focus parent
 
-# focus the child container
-#bindsym $mod+d focus child
+# Gap controls
+bindsym $mod+plus gaps inner current plus 5
+bindsym $mod+minus gaps inner current minus 5
+bindsym $mod+Shift+plus gaps outer current plus 5
+bindsym $mod+Shift+minus gaps outer current minus 5
 
-# # switch to workspace
+# switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
 bindsym $mod+3 workspace 3
@@ -144,6 +162,7 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 bindsym $mod+Shift+d workspace 11
+
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1
 bindsym $mod+Shift+2 move container to workspace 2
@@ -156,49 +175,6 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# NOTE: This is some real tom fooliery with my keyboard layout
-#  ZMK will send a shift mod with the items that require a shift key on a
-#  regular keyboard.  so though it defines a keycode as "LEFT_BRACE" it really
-#  is shift_L + LEFT_BRACE.  So you will notice the odd peppering of shifts and
-#  non shifts
-# switch to workspace
-# bindsym $mod+Shift+plus workspace 1
-# bindsym $mod+bracketleft workspace 2
-# bindsym $mod+Shift+braceleft workspace 3
-# bindsym $mod+Shift+parenleft workspace 4
-# bindsym $mod+Shift+ampersand workspace 5
-# bindsym $mod+equal workspace 6
-# bindsym $mod+Shift+parenright workspace 7
-# bindsym $mod+Shift+braceright workspace 8
-# bindsym $mod+bracketright workspace 9
-# bindsym $mod+Shift+asterisk workspace 10
-#
-# # NOTE: since i have to press shift to get these symbols
-# # move focused container to workspace.
-# #  I wanted to use this as my method of moving spaces around, but it doesn't
-# #  seem to work, but when i provide the keycode + shift it seems to work well.
-# # bindsym $mod+Shift+kp_1 move container to workspace 1
-# # bindsym $mod+Shift+kp_2 move container to workspace 2
-# # bindsym $mod+Shift+kp_3 move container to workspace 3
-# # bindsym $mod+Shift+kp_4 move container to workspace 4
-# # bindsym $mod+Shift+kp_5 move container to workspace 5
-# # bindsym $mod+Shift+kp_6 move container to workspace 6
-# # bindsym $mod+Shift+kp_7 move container to workspace 7
-# # bindsym $mod+Shift+kp_8 move container to workspace 8
-# # bindsym $mod+Shift+kp_9 move container to workspace 9
-# # bindsym $mod+Shift+kp_0 move container to workspace 10
-#
-# bindcode $mod+Shift+87 move container to workspace 1
-# bindcode $mod+Shift+88 move container to workspace 2
-# bindcode $mod+Shift+89 move container to workspace 3
-# bindcode $mod+Shift+83 move container to workspace 4
-# bindcode $mod+Shift+84 move container to workspace 5
-# bindcode $mod+Shift+85 move container to workspace 6
-# bindcode $mod+Shift+79 move container to workspace 7
-# bindcode $mod+Shift+80 move container to workspace 8
-# bindcode $mod+Shift+81 move container to workspace 9
-# bindcode $mod+Shift+90 move container to workspace 10
-
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -209,11 +185,6 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
-
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
         bindsym h resize shrink width 10 px or 10 ppt
         bindsym j resize grow height 10 px or 10 ppt
         bindsym k resize shrink height 10 px or 10 ppt
@@ -232,77 +203,41 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# ============================================================================
+# BAR CONFIGURATION
+# ============================================================================
 bar {
-    font pango:Economica, FontAwesome 11
-        status_command i3status
-    separator_symbol "⋆"
-        tray_output primary
+    position top
+    font pango:JetBrains Mono, FontAwesome 11
     status_command i3status --config ~/.config/i3status/config
-    # colors {
-    #     background          $bg
-    #     statusline          $sl
-    #     separator           $tx
-    #     focused_workspace   $ia        $ia        $tx
-    #     active_workspace    $gn        $ac        $tx
-    #     inactive_workspace  $bg        $fg        $ia
-    #     urgent_workspace    $ac        $bg        $ac
-    # }
+    separator_symbol "⋆"
+    tray_output primary
+    
+    colors {
+        background $bar-bg
+        statusline $bar-text
+        separator  $bar-separator
+        
+        #                  border         background       text
+        focused_workspace  $bar-focused-ws $bar-focused-ws #ffffff
+        active_workspace   $bar-separator  $bar-separator  #ffffff
+        inactive_workspace $bar-inactive-ws $bar-inactive-ws $inactive-text-color
+        urgent_workspace   $bar-urgent-ws  $bar-urgent-ws   #ffffff
+    }
 }
-# bar {
-#     strip_workspace_numbers yes
-#     #tray_output none
-#     font pango:Nerd Font 10
-#     separator_symbol "⋆"
-#
-#     status_command i3status --config ~/.config/i3status/config
-#     # use patched i3status
-#     # status_command ~/src/i3status/i3status --config ~/.config/i3status/config
-#     #status_command i3bf
-#     #status_command ~/.i3/i3-conky-initscript.sh
-#
-# #   statusbar colors       border      background   text
-#     colors {
-#         background          $bg
-#         statusline          $sl
-#         separator           $tx
-#         focused_workspace   $ia        $ia        $tx
-#         active_workspace    $gn        $ac        $tx
-#         inactive_workspace  $bg        $fg        $ia
-#         urgent_workspace    $ac        $bg        $ac
-#     }
-# }
-#
-# ------------------------------------------
-# CUSTOM KEYS START
-# ------------------------------------------
-exec --no-startup-id nm-applet
 
-# bindsym $mod+Shift+s exec --no-startup-id ~/dotfiles/bin/monitor
-# bindsym $mod+Shift+n exec --no-startup-id ~/dotfiles/bin/resolution
-
-# FKeys
-# Pulse Audio controls
-# # Sreen brightness controls
-# Alsa audio controls.
-
-
-
-
-
-
+# ============================================================================
+# MEDIA KEYS & SYSTEM CONTROLS
+# ============================================================================
 
 # Volume Control
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute alsa_input.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp_6__source toggle
 
 # Screen Brightness Controls
 bindsym XF86MonBrightnessUp exec --no-startup-id  brightnessctl set +5%
-
 bindsym XF86MonBrightnessDown exec --no-startup-id  brightnessctl set 5%-
 
 # ALSA Audio Controls
@@ -313,11 +248,8 @@ bindsym $mod+comma exec --no-startup-id ~/.config/i3/scripts/alsa up Headphone
 # Move Workspace
 bindsym $mod+m move workspace to output left
 
-# Suspend
+# System controls
 bindsym $mod+Shift+period exec --no-startup-id  i3-msg exit
 bindsym $mod+Shift+F4 exec --no-startup-id systemctl poweroff
-
-# bindsym $mod+Shift+F2 exec systemctl hibernate
 bindsym $mod+Shift+F1 exec systemctl suspend
 bindsym $mod+Shift+F2 exec --no-startup-id systemctl reboot
-
